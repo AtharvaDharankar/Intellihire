@@ -1,0 +1,118 @@
+            SARATH KS
+Male, Age – 24 years
+Title: Application for Job as developer                    
+Dear Sir,
+I write to express my interest in the position as Software Engineer in your company. My responsibilities 
+included the designing, development and debugging of the application. Most of the projects that I have dealt 
+with are windows and web application. 
+Experience has taught me how to build strong relationships with all departments in an organization. I have 
+the ability to work within a team as well as cross-team. I can work with web engineers to resolve technical 
+issues and implement technical enhancements, work with the development department to implement design 
+and functional enhancements.
+Thank you for your consideration. 
+Sarath .K.S
+                   
+PROFESSIONAL EXPERIENCE   :           1+  years.                                                                                                           
+BJ CORPS                                   :  Developer
+RIOLABZ TECHNOLGIES     :  Developer
+ResponsibilitiesMy responsibilities include the designing, development and debugging of the application. 
+Most of the projects that I have dealt with are  web application. 
+PROJECTS WORKED ON : 
+Project 1 : Online tutoring site (website)                                                                                                     
+Environment: PHP , MySQL, Ajax , JQuery, HTML
+Role: Developer
+Brief Description of project 
+3 different login – student, teacher, admin.
+Student: View/update profile, view/ manage payment/order histories, View teacher’s list- Search/filter 
+the list by name, subject, topic, level of study and could buy teacher class as units of 1 hour each. He 
+could select any of the time that teacher available and not purchased by any other user. Payment 
+could done through PayPal.
+Teacher: View/update profile, view/ manage payment/order histories, Teacher could declare their 
+available timings on any date/time it is allowed alter the list at any time that are not purchased by any
+user.
+Admin: View all the user profiles and their activities and delete/block/unblock users. View/manage 
+orders/payments. Order/payment history could be filtered by teacher name, student name, date, order
+status, etc. Reports could be view by a day/week/month/year/all. 
+Responsibilities:
+Designing, Coding, Debugging.
+E-mail : sarath-ks@outlook.com   |   Phone (M) : +91 9995111998   
+            SARATH KS
+Male, Age – 24 years
+Project 2:  http://www.janeelvinproperty.com.au   (Real Estate Site)                                                  
+Environment  : PHP , word-press  , MySQL, Ajax , JQuery, HTML
+Role : Developer
+Brief Description of project :
+Real estate site shows lists of properties for sale,sold properties and there details and description.
+admin panel: word-press plugin. Admin could add for sale,sold properties and there details and 
+description
+Responsibilities:
+Designing, Coding, Debugging.
+Project 3:  : CRM- for kairos educational group  (Web Application)                                                                             
+Environment  : PHP , MySQL, Ajax , JQuery, HTML
+Role : Developer
+Brief Description  of project :
+4 different login: super-admin, admin, manager, staffs.
+Any of the users could create a new leads. Super admin View/manage all leads and could make teams 
+for the leads and making any of the admin/manager as the team leader. Admin/manager/staff could 
+view only the leads that are assigned to them by super admin. Team leader could assign tasks to his 
+team member for the lead. Each user will have their own calendar showing all there associated leads 
+and tasks, He could update status, progress of the lead/task created and could add notes for each 
+action.
+Responsibilities:
+Designing, Coding, Debugging.
+Project 4 :   https://www.sandalesaddlery.com.au/  (Online Shopping  Site)                                                                
+Environment: PHP, MySQL, JQuery, Ajax , HTML
+Role: Developer
+Brief Description of project:
+A site for Online Equestrian Supplies. Products are categorised in a well manner and could be viewed 
+brandwise, product search etc. Any product could have a number of variants. Each one will differ in 
+their properties.
+Admin panel to add categories, subcategories, products. Admin could link them as desired. Admin will
+get complete details of orders, purchases, stock, reports etc.
+Responsibilities:
+Designing, Coding, Debugging.
+Project 5 :   http://www.hekilioutrigger.com.au   (website)                                                                                      
+Environment: PHP, word-press  , MySQL, JQuery, Ajax , HTML
+Role: Developer
+Brief Description of project :
+Site for a canoeing group. Made the admin panel to add the headlines, contents, photos and galleries. 
+And made the front-end dynamic
+Responsibilities :
+Designing, Coding, Debugging.
+Project 6:                                                                                                                              
+E-mail : sarath-ks@outlook.com   |   Phone (M) : +91 9995111998   
+            SARATH KS
+Male, Age – 24 years
+Also worked with various sites like http://www.lauggs.com.au/, http://www.grandprixmazda.com.au/,  
+http://www.scraustralia.com/, http://www.samallen.com.au/, http://www.springlakehotel.com.au/, etc.
+EDUCATION
+B.Tech (EC) 2010S.N.G.C.E ,Kadayiruppu (M.G.U)        61.81%
+Class XII 2006Govt.HSS,perumbavoor (Kerala 
+Board)       81.17%
+Class X 2004Asram HSS, Kurppampadi (Kerala 
+Board)       77.11%
+SKILLS
+Techni
+cal
+ skillsMark Up Languages          : HTML.
+Server Side Technologies  : JSP , PHP .
+Scripting Languages          : Java Script, JQuery, AJAX.
+OPERATING SYSTEM           : windows (7/ XP/ Server 
+2003)
+DATABASES                           : MySql.
+Programming Languages  : Core JAVA   , C .
+APPLICATION BASED         : Ms Office Suit( Word, Excel, 
+P.Point)
+Thorough knowledge in OOPS concepts.
+PERMANENT ADDRESS
+Choopruth  House,
+North Ezhipruram,
+Marampilly  .P.O,
+Aluva- 683107.
+Phone No. (M)  : 9995111998
+Email   sarath_89@yahoo.com
+DECLARATION
+I confirm that the above mentioned details are true to the best of my knowledge.
+Place: Aluva Sarath .K.S
+Date:                                                                                                                                          
+E-mail : sarath-ks@outlook.com   |   Phone (M) : +91 9995111998   

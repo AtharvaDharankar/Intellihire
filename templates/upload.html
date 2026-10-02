@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="AI-powered resume ranker — upload resumes and match them against job descriptions instantly.">
+    <title>IntelliHire — Get Started</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-upload">
+    <!-- Infinite Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Top Progress Bar -->
+    <nav class="progress-rail rail-hidden" id="step-rail">
+        <div class="progress-rail-track">
+            <div class="progress-rail-fill" id="rail-line-fill"></div>
+        </div>
+        <div class="progress-rail-steps">
+            <div class="step-node active" data-step="step-get-started">
+                <div class="step-dot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="step-label">Start</span>
+            </div>
+            <div class="step-node" data-step="step-skills">
+                <div class="step-dot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="step-label">Skills</span>
+            </div>
+            <div class="step-node" data-step="step-weights">
+                <div class="step-dot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="step-label">Weights</span>
+            </div>
+            <div class="step-node" data-step="step-upload">
+                <div class="step-dot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="step-label">Upload</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flow-container">
+        
+        <!-- STEP 1: GET STARTED -->
+        <div class="step-container active" id="step-get-started">
+            <h1 class="get-started-title">IntelliHire</h1>
+            <p class="get-started-authors">made by Atharva, Piyush, Hrutuja, Rohan, Dilipkumar.</p>
+            <button class="btn-get-started" onclick="goToStep('step-get-started', 'step-skills')">Get Started</button>
+        </div>
+
+        <!-- STEP 2: ENTER SKILLS -->
+        <!-- STEP 2: ENTER SKILLS -->
+        <div class="step-container fs-step" id="step-skills">
+            <div class="fs-split">
+                <div class="fs-split-left">
+                    <h2>Tell us what you're looking for.</h2>
+                    <p>Paste your job description. We'll extract the core tech skills automatically.</p>
+                </div>
+                <div class="fs-split-right">
+                    <textarea name="job_description" id="job_description" placeholder="Start typing or pasting here..."></textarea>
+                    <div class="fs-next-btn-container">
+                        <button type="button" class="fs-btn" onclick="processSkills()">Extract Skills</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: SET WEIGHTS -->
+        <div class="step-container fs-step" id="step-weights">
+            <div class="fs-weights-container">
+                <div class="fs-weights-header">
+                    <h2>Dial in the importance.</h2>
+                    <p>Adjust these sliders to set the weight (1-10) for each skill.</p>
+                </div>
+                <div class="fs-skills-list" id="skills-weight-list">
+                    <!-- Injected via JS -->
+                </div>
+                <div class="fs-weights-footer">
+                    <button type="button" class="fs-btn-back" onclick="goToStep('step-weights', 'step-skills')">Back</button>
+                    <button type="button" class="fs-btn" onclick="goToStep('step-weights', 'step-upload')">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: UPLOAD RESUMES -->
+        <div class="step-container fs-step" id="step-upload">
+            <div class="fs-upload-container">
+                <form id="upload-form" onsubmit="return false;" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+                    
+                    <div class="fs-upload-dropzone" id="file-drop-zone">
+                        <input type="file" name="resume_files" id="resume_files" accept=".pdf,.docx,.txt,.zip" multiple required>
+                        <div class="fs-drop-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p class="fs-drop-text">Drop Resumes Here</p>
+                        <p class="fs-drop-hint" id="file-count-hint">Supports PDF, DOCX, TXT, or ZIP</p>
+                    </div>
+
+                    <div class="fs-upload-footer">
+                        <button type="button" class="fs-btn-back" onclick="goToStep('step-upload', 'step-weights')">Back</button>
+                        
+                        <div class="fs-toggle-group">
+                            <span class="fs-toggle-label">Prioritize:</span>
+                            <div class="fs-toggle-switch" id="ranking-toggle" data-state="skillset" onclick="toggleRanking()">
+                                <div class="fs-toggle-slider"></div>
+                                <span class="fs-toggle-option active" id="opt-skillset">Skills</span>
+                                <span class="fs-toggle-option" id="opt-experience">Experience</span>
+                            </div>
+                            <input type="hidden" id="ranking_preference" name="ranking_preference" value="skillset">
+                        </div>
+
+                        <button type="button" class="fs-btn" id="analyze-btn" onclick="startAnalysisFlow()">
+                            Analyze Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- STEP 5: LOADING -->
+        <div class="step-container fs-step" id="step-loading" style="align-items: center; justify-content: center;">
+            <div class="progress-content" style="text-align: center; width: 100%; max-width: 600px; padding: 40px;">
+                <div class="progress-spinner" id="progress-spinner" style="margin: 0 auto 24px;">
+                    <svg viewBox="0 0 50 50">
+                        <circle class="spinner-track" cx="25" cy="25" r="20"></circle>
+                        <circle class="spinner-fill" cx="25" cy="25" r="20"></circle>
+                    </svg>
+                </div>
+                <h3 class="progress-title" id="progress-title" style="font-size: 1.5rem; margin-bottom: 8px;">Uploading files...</h3>
+                <p class="progress-subtitle" id="progress-subtitle" style="color: var(--text-muted); margin-bottom: 32px;">Preparing your resumes</p>
+
+                <div class="progress-bar-container" id="upload-progress-container" style="width: 100%; max-width: 400px; margin: 0 auto;">
+                    <div class="progress-bar-track" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden; margin-bottom: 8px;">
+                        <div class="progress-bar-fill" id="upload-progress-fill" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.3s;"></div>
+                    </div>
+                    <div class="progress-stats" style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: center; gap: 4px;">
+                        <span id="progress-current">0</span>
+                        <span class="progress-divider">/</span>
+                        <span id="progress-total">0</span>
+                        <span class="progress-label">chunks uploaded</span>
+                    </div>
+                </div>
+
+                <div class="progress-file-list" id="progress-file-list" style="margin-top: 32px; max-height: 200px; overflow-y: auto; text-align: left; background: var(--bg-card); border-radius: var(--radius-md); padding: 16px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        //  Flow Logic
+        // ============================================================
+        let activeSkillWeights = {};
+
+        function goToStep(currentId, nextId) {
+            const current = document.getElementById(currentId);
+            const next = document.getElementById(nextId);
+            
+            current.classList.remove('slide-up-in');
+            current.classList.add('slide-up-out');
+            
+            setTimeout(() => {
+                current.classList.remove('active', 'slide-up-out');
+                next.classList.add('active', 'slide-up-in');
+            }, 800);
+
+            // Update step rail
+            updateStepRail(nextId);
+        }
+
+        function processSkills() {
+            const text = document.getElementById('job_description').value;
+            if (!text.trim()) {
+                shakeElement(document.getElementById('job_description'));
+                return;
+            }
+            
+            // Parse skills from user input — split by commas, newlines, or semicolons
+            let skills = text.split(/[,;\n]+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 0);
+            skills = [...new Set(skills)]; // Remove duplicates
+
+            if (skills.length === 0) {
+                shakeElement(document.getElementById('job_description'));
+                return;
+            }
+
+            const listEl = document.getElementById('skills-weight-list');
+            listEl.innerHTML = '';
+            
+            skills.forEach(skill => {
+                const item = document.createElement('div');
+                item.className = 'fs-skill-item';
+                item.innerHTML = `
+                    <span class="fs-skill-name">${skill}</span>
+                    <div class="fs-skill-slider-container">
+                        <input type="range" class="fs-skill-slider" min="1" max="10" value="5" oninput="this.parentElement.nextElementSibling.textContent=this.value">
+                    </div>
+                    <span class="fs-skill-value">5</span>
+                `;
+                listEl.appendChild(item);
+            });
+
+            goToStep('step-skills', 'step-weights');
+        }
+
+        async function startAnalysisFlow() {
+            if (accumulatedFiles.length === 0) {
+                shakeElement(document.getElementById('file-drop-zone'));
+                return;
+            }
+
+            // Gather skill weights
+            activeSkillWeights = {};
+            const items = document.querySelectorAll('.fs-skill-item');
+            items.forEach(item => {
+                const name = item.querySelector('.fs-skill-name').textContent;
+                const weight = item.querySelector('.fs-skill-slider').value;
+                activeSkillWeights[name] = parseInt(weight, 10);
+            });
+
+            goToStep('step-upload', 'step-loading');
+            
+            setTimeout(() => {
+                startChunkedUpload();
+            }, 800);
+        }
+
+        // ============================================================
+        //  Ranking Preference Toggle
+        // ============================================================
+        function toggleRanking() {
+            const toggle = document.getElementById('ranking-toggle');
+            const input = document.getElementById('ranking_preference');
+            const optSkill = document.getElementById('opt-skillset');
+            const optExp = document.getElementById('opt-experience');
+            
+            if (toggle.dataset.state === 'skillset') {
+                toggle.dataset.state = 'experience';
+                input.value = 'experience';
+                optSkill.classList.remove('active');
+                optExp.classList.add('active');
+            } else {
+                toggle.dataset.state = 'skillset';
+                input.value = 'skillset';
+                optExp.classList.remove('active');
+                optSkill.classList.add('active');
+            }
+        }
+
+        // ============================================================
+        //  File Drop Zone Interaction
+        // ============================================================
+        const dropZone = document.getElementById('file-drop-zone');
+        const fileInput = document.getElementById('resume_files');
+        const fileHint = document.getElementById('file-count-hint');
+        let accumulatedFiles = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            addFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', () => {
+            addFiles(fileInput.files);
+        });
+
+        function addFiles(newFiles) {
+            for (const f of newFiles) {
+                if (!accumulatedFiles.some(existing => existing.name === f.name && existing.size === f.size)) {
+                    accumulatedFiles.push(f);
+                }
+            }
+            updateFileHint();
+        }
+
+        function updateFileHint() {
+            const count = accumulatedFiles.length;
+            if (count > 0) {
+                const totalSize = accumulatedFiles.reduce((sum, f) => sum + f.size, 0);
+                const sizeStr = formatBytes(totalSize);
+                fileHint.textContent = `${count} file${count !== 1 ? 's' : ''} selected (${sizeStr})`;
+                dropZone.classList.add('has-files');
+            } else {
+                fileHint.textContent = 'PDF, DOCX, TXT, or ZIP';
+                dropZone.classList.remove('has-files');
+            }
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // ============================================================
+        //  Chunked Upload Engine
+        // ============================================================
+        const CHUNK_SIZE = 2 * 1024 * 1024;
+
+        async function startChunkedUpload() {
+            const jobDescription = document.getElementById('job_description').value.trim();
+            const rankingPreference = document.getElementById('ranking_preference').value;
+
+            try {
+                updateProgress('Initializing upload...', 'Creating session', 0, 1);
+                const initRes = await fetch('/api/upload/init', { method: 'POST' });
+                const { upload_id } = await initRes.json();
+
+                const files = accumulatedFiles;
+                let totalChunks = 0;
+                let uploadedChunks = 0;
+
+                for (const file of files) {
+                    totalChunks += Math.ceil(file.size / CHUNK_SIZE) || 1;
+                }
+
+                updateProgress('Uploading files...', `0 / ${totalChunks} chunks`, 0, totalChunks);
+                renderFileList(files, []);
+
+                const completedFiles = [];
+
+                for (let fi = 0; fi < files.length; fi++) {
+                    const file = files[fi];
+                    const fileChunks = Math.ceil(file.size / CHUNK_SIZE) || 1;
+
+                    for (let ci = 0; ci < fileChunks; ci++) {
+                        const start = ci * CHUNK_SIZE;
+                        const end = Math.min(start + CHUNK_SIZE, file.size);
+                        const blob = file.slice(start, end);
+
+                        const formData = new FormData();
+                        formData.append('upload_id', upload_id);
+                        formData.append('filename', file.name);
+                        formData.append('chunk_index', ci);
+                        formData.append('total_chunks', fileChunks);
+                        formData.append('chunk', blob, file.name);
+
+                        const res = await fetch('/api/upload/chunk', { method: 'POST', body: formData });
+                        if (!res.ok) throw new Error(`Upload failed for ${file.name} chunk ${ci}`);
+
+                        const chunkResult = await res.json();
+                        uploadedChunks++;
+
+                        const pct = (uploadedChunks / totalChunks) * 100;
+                        updateProgress('Uploading files...', `${uploadedChunks} / ${totalChunks} chunks`, uploadedChunks, totalChunks);
+                        setProgressBar(pct);
+
+                        if (chunkResult.file_complete) {
+                            completedFiles.push(file.name);
+                            renderFileList(files, completedFiles);
+                        }
+                    }
+                }
+
+                updateProgress('Analyzing resumes...', 'Reassembling files & AI analysis', 100, 100);
+                setProgressBar(100);
+                setSpinnerMode('analyzing');
+
+                const finalRes = await fetch('/api/upload/finalize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        upload_id, 
+                        job_description: jobDescription,
+                        ranking_preference: rankingPreference,
+                        skill_weights: activeSkillWeights
+                    })
+                });
+
+                const { job_id, error } = await finalRes.json();
+                if (error) throw new Error(error);
+
+                await pollJobStatus(job_id, files.length);
+
+            } catch (err) {
+                console.error('Upload error:', err);
+                updateProgress('Upload failed', err.message, 0, 0);
+                setSpinnerMode('error');
+            }
+        }
+
+        async function pollJobStatus(jobId, totalFiles) {
+            updateProgress('Processing resumes...', 'Parsing documents & computing similarity...', 0, totalFiles);
+
+            const poll = async () => {
+                try {
+                    const res = await fetch(`/api/job/${jobId}/status`);
+                    const data = await res.json();
+
+                    if (data.status === 'completed') {
+                        const completeRes = await fetch(`/api/job/${jobId}/complete`, { method: 'POST' });
+                        const completeData = await completeRes.json();
+
+                        setSpinnerMode('done');
+                        updateProgress('Analysis complete!', `${data.results.length} resumes ranked`, data.total, data.total);
+                        setProgressBar(100);
+
+                        setTimeout(() => {
+                            window.location.href = completeData.redirect || '/results';
+                        }, 800);
+                        return;
+                    }
+
+                    if (data.total > 0) {
+                        const pct = (data.processed / data.total) * 100;
+                        updateProgress('Processing resumes...', data.note || `${data.processed} / ${data.total} files parsed`, data.processed, data.total);
+                        setProgressBar(pct);
+                    }
+                    setTimeout(poll, 800);
+                } catch (e) {
+                    setTimeout(poll, 1500);
+                }
+            };
+            poll();
+        }
+
+        function updateProgress(title, subtitle, current, total) {
+            document.getElementById('progress-title').textContent = title;
+            document.getElementById('progress-subtitle').textContent = subtitle;
+            document.getElementById('progress-current').textContent = current;
+            document.getElementById('progress-total').textContent = total;
+        }
+
+        function setProgressBar(pct) {
+            document.getElementById('upload-progress-fill').style.width = Math.min(pct, 100) + '%';
+        }
+
+        function setSpinnerMode(mode) {
+            const spinner = document.getElementById('progress-spinner');
+            spinner.className = 'progress-spinner';
+            if (mode) spinner.classList.add('mode-' + mode);
+        }
+
+        function renderFileList(allFiles, completedFiles) {
+            const container = document.getElementById('progress-file-list');
+            container.innerHTML = allFiles.map(f => {
+                const done = completedFiles.includes(f.name);
+                return `
+                    <div class="progress-file-item ${done ? 'completed' : ''}" style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.85rem;">
+                        <span style="display:flex; gap: 8px;">
+                            <span class="file-icon" style="color: ${done ? 'var(--success)' : 'inherit'}">${done ? '✓' : '⋯'}</span>
+                            <span class="file-name">${f.name}</span>
+                        </span>
+                        <span class="file-size">${formatBytes(f.size)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function shakeElement(el) {
+            el.classList.add('shake');
+            setTimeout(() => el.classList.remove('shake'), 600);
+        }
+
+        // ============================================================
+        //  Canvas Background Animation (Infinite Frosted Circles)
+        // ============================================================
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * canvas.width;
+                this.y = initial ? Math.random() * canvas.height : canvas.height + 150;
+                this.radius = Math.random() * 100 + 50;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.life = Math.random() * 0.4 + 0.1;
+                this.color = Math.random() > 0.5 ? '#8b5cf6' : '#06b6d4'; // Purple or Cyan
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.y < -this.radius * 2) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life;
+                ctx.filter = 'blur(60px)';
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < 12; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            // Draw a semi-transparent dark background to create fluid trails
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = '#0a0a0f';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.globalCompositeOperation = 'screen';
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            ctx.globalCompositeOperation = 'source-over';
+            
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // ============================================================
+        //  Step Rail Logic
+        // ============================================================
+        const stepOrder = ['step-get-started', 'step-skills', 'step-weights', 'step-upload', 'step-loading'];
+        const railNodes = document.querySelectorAll('.step-node');
+        const rail = document.getElementById('step-rail');
+        const railLineFill = document.getElementById('rail-line-fill');
+
+        function updateStepRail(activeStepId) {
+            // Show/hide rail on title page
+            if (activeStepId === 'step-get-started') {
+                rail.classList.add('rail-hidden');
+            } else {
+                rail.classList.remove('rail-hidden');
+            }
+
+            const activeIndex = stepOrder.indexOf(activeStepId);
+            // Map step-loading to the upload node (index 3)
+            const railActiveIndex = Math.min(activeIndex, railNodes.length - 1);
+
+            railNodes.forEach((node, i) => {
+                node.classList.remove('active', 'completed');
+                if (i < railActiveIndex) {
+                    node.classList.add('completed');
+                } else if (i === railActiveIndex) {
+                    node.classList.add('active');
+                }
+            });
+
+            // Animate horizontal fill bar
+            if (railNodes.length > 1) {
+                const progress = railActiveIndex / (railNodes.length - 1);
+                railLineFill.style.width = (progress * 100) + '%';
+            }
+        }
+
+        // ============================================================
+        //  Ripple Effect for Buttons
+        // ============================================================
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.fs-btn, .fs-btn-back, .btn-get-started');
+            if (!btn) return;
+            
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    </script>
+</body>
+</html>

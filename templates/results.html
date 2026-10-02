@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ranked resume results — view candidate match scores and download reports.">
+    <title>Resume Ranker — Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-results">
+    <!-- Canvas particle background -->
+    <canvas id="results-bg-canvas"></canvas>
+
+    <!-- Ambient background blobs (hidden by CSS on results page) -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="results-layout">
+        <!-- Top bar -->
+        <header class="results-header">
+            <a href="{{ url_for('index') }}" class="back-link" id="back-to-upload">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                New Analysis
+            </a>
+
+            <div class="header-center">
+                <h1 id="results-title">Ranked Results</h1>
+                <span class="badge">{{ results|length }} resume{{ 's' if results|length != 1 }}</span>
+            </div>
+
+            <a href="{{ url_for('download_csv') }}" download="ranked_resumes.csv" class="btn-secondary"
+                id="download-csv-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Export CSV
+            </a>
+        </header>
+
+        {% if results %}
+        <!-- Results Grid -->
+        <div class="results-grid">
+            <!-- Top 3 Podium -->
+            {% if results|length >= 1 %}
+            <div class="podium-section">
+                {% for result in results[:3] %}
+                <div class="podium-card podium-{{ loop.index }}" style="animation-delay: {{ loop.index0 * 0.12 }}s">
+                    <div class="podium-rank">
+                        <span class="podium-number">#{{ loop.index }}</span>
+                    </div>
+                    <div class="podium-avatar">{{ result[0][0][0] if result[0] else '?' }}</div>
+                    <h3 class="podium-name">{{ result[0][0] if result[0] else 'N/A' }}</h3>
+                    <p class="podium-email">{{ result[1][0] if result[1] else 'N/A' }}</p>
+                    <div class="podium-experience">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                        {% if result[4] is defined and result[4] %}
+                            <span>{{ result[4] }} yr{{ 's' if result[4] != 1 }}</span>
+                        {% else %}
+                            <span>Fresher</span>
+                        {% endif %}
+                    </div>
+                    <div class="podium-score-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                            <circle class="ring-fill" cx="50" cy="50" r="42"
+                                style="--score: {{ result[2] }}; animation-delay: {{ loop.index0 * 0.12 + 0.3 }}s">
+                            </circle>
+                        </svg>
+                        <span class="ring-label">{{ "%.1f"|format(result[2]) }}%</span>
+                    </div>
+                    <button type="button" class="btn-view" id="view-btn-{{ loop.index }}"
+                        onclick="openDocViewer('{{ result[3] }}')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        View Resume
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Remaining Results Table -->
+            {% if results|length > 3 %}
+            <div class="card table-card">
+                <div class="results-table-wrapper">
+                    <table id="results-table">
+                        <thead>
+                            <tr>
+                                <th class="col-rank">#</th>
+                                <th class="col-name">Candidate</th>
+                                <th class="col-email">Email</th>
+                                <th class="col-exp">Experience</th>
+                                <th class="col-score">Match Score</th>
+                                <th class="col-action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results[3:] %}
+                            <tr class="result-row" style="animation-delay: {{ (loop.index0 + 3) * 0.06 }}s">
+                                <td class="col-rank">
+                                    <span class="rank-badge">{{ loop.index + 3 }}</span>
+                                </td>
+                                <td class="col-name">
+                                    <div class="candidate-info">
+                                        <div class="avatar">{{ result[0][0][0] if result[0] else '?' }}</div>
+                                        <span>{{ result[0][0] if result[0] else 'N/A' }}</span>
+                                    </div>
+                                </td>
+                                <td class="col-email">
+                                    <span class="email-text">{{ result[1][0] if result[1] else 'N/A' }}</span>
+                                </td>
+                                <td class="col-exp">
+                                    {% if result[4] is defined and result[4] %}
+                                        <span class="exp-badge exp-has">{{ result[4] }} yr{{ 's' if result[4] != 1 }}</span>
+                                    {% else %}
+                                        <span class="exp-badge exp-fresher">Fresher</span>
+                                    {% endif %}
+                                </td>
+                                <td class="col-score">
+                                    <div class="score-cell">
+                                        <div class="score-bar-track">
+                                            <div class="score-bar-fill" style="width: {{ result[2] }}%"></div>
+                                        </div>
+                                        <span class="score-value">{{ "%.1f"|format(result[2]) }}%</span>
+                                    </div>
+                                </td>
+                                <td class="col-action">
+                                    <button type="button" class="btn-view-sm" id="view-btn-{{ loop.index + 3 }}"
+                                        onclick="openDocViewer('{{ result[3] }}')">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <!-- No results -->
+        <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <h2>No results yet</h2>
+            <p>Upload resumes and a job description to get started.</p>
+            <a href="{{ url_for('index') }}" class="btn-primary" style="width: auto; padding: 12px 32px;">
+                Go to Upload
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ========== Document Viewer Modal ========== -->
+    <div class="doc-viewer-overlay" id="docViewerOverlay">
+        <div class="doc-viewer-modal">
+            <!-- Header bar -->
+            <div class="doc-viewer-header">
+                <div class="doc-viewer-title-group">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <span class="doc-viewer-filename" id="docViewerFilename">document.pdf</span>
+                    <span class="doc-viewer-badge" id="docViewerBadge">PDF</span>
+                </div>
+                <div class="doc-viewer-actions">
+                    <a href="#" class="doc-viewer-download-btn" id="docViewerDownload" download title="Download file">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download
+                    </a>
+                    <button type="button" class="doc-viewer-close-btn" id="docViewerClose" title="Close viewer">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Document content -->
+            <div class="doc-viewer-body">
+                <div class="doc-viewer-loading" id="docViewerLoading">
+                    <div class="doc-loading-spinner"></div>
+                    <span>Loading document…</span>
+                </div>
+                <iframe id="docViewerFrame" class="doc-viewer-iframe" title="Document viewer"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ---- Document Viewer Logic ---- */
+        const overlay = document.getElementById('docViewerOverlay');
+        const frame = document.getElementById('docViewerFrame');
+        const filenameEl = document.getElementById('docViewerFilename');
+        const badgeEl = document.getElementById('docViewerBadge');
+        const downloadBtn = document.getElementById('docViewerDownload');
+        const closeBtn = document.getElementById('docViewerClose');
+        const loadingEl = document.getElementById('docViewerLoading');
+
+        function openDocViewer(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            filenameEl.textContent = filename;
+            badgeEl.textContent = ext.toUpperCase();
+
+            // Set badge color per file type
+            badgeEl.className = 'doc-viewer-badge badge-' + ext;
+
+            // Set download link
+            downloadBtn.href = '/view/' + encodeURIComponent(filename);
+            downloadBtn.download = filename;
+
+            // Show loading, hide iframe
+            loadingEl.style.display = 'flex';
+            frame.style.opacity = '0';
+            frame.src = '';
+
+            // Determine the source URL
+            let src;
+            if (ext === 'pdf') {
+                // Serve PDF directly — browser renders it in iframe
+                src = '/view/' + encodeURIComponent(filename);
+            } else {
+                // DOCX, TXT — use the HTML conversion endpoint
+                src = '/view_content/' + encodeURIComponent(filename);
+            }
+
+            frame.onload = function () {
+                loadingEl.style.display = 'none';
+                frame.style.opacity = '1';
+            };
+            frame.src = src;
+
+            // Show overlay
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDocViewer() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            // Delay clearing src so transition can play
+            setTimeout(() => { frame.src = ''; }, 300);
+        }
+
+        closeBtn.addEventListener('click', closeDocViewer);
+
+        // Click outside modal closes it
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeDocViewer();
+        });
+
+        // ESC key closes viewer
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                closeDocViewer();
+            }
+        });
+
+        /* ---- Canvas Background Animation ---- */
+        const canvas = document.getElementById('results-bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * canvas.width;
+                this.y = initial ? Math.random() * canvas.height : canvas.height + 150;
+                this.radius = Math.random() * 100 + 50;
+                this.speed = Math.random() * 0.8 + 0.3;
+                this.life = Math.random() * 0.3 + 0.08;
+                this.color = Math.random() > 0.5 ? '#8b5cf6' : '#06b6d4';
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.y < -this.radius * 2) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life;
+                ctx.filter = 'blur(60px)';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 8; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateBg() {
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = '#0a0a0f';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.globalCompositeOperation = 'screen';
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            ctx.globalCompositeOperation = 'source-over';
+
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+    </script>
+</body>
+
+</html>
+

@@ -1,0 +1,122 @@
+{
+  "job_title": "Senior ML Engineer",
+  "total_resumes_processed": 5,
+  "ranked_candidates": [
+    {
+      "rank": 1,
+      "candidate_name": "David Kim\nd.kim@researchlab.ai",
+      "email": "d.kim@researchlab.ai",
+      "fit_score": 83.72,
+      "technical_skills_score": 85.71,
+      "experience_depth_score": 100.0,
+      "semantic_alignment_score": 63.48,
+      "matched_skills": [
+        "aws",
+        "docker",
+        "faiss",
+        "kafka",
+        "kubernetes",
+        "langchain",
+        "python",
+        "pytorch",
+        "spark",
+        "sql",
+        "transformers"
+      ],
+      "missing_skills": [
+        "mlops"
+      ],
+      "summary": "David Kim\nd.kim@researchlab.ai demonstrates solid experience depth (100/100) relative to the SeniorityLevel.SENIOR target level. Key gaps to address: mlops."
+    },
+    {
+      "rank": 2,
+      "candidate_name": "Alice Chen",
+      "email": "alice.chen@email.com",
+      "fit_score": 80.67,
+      "technical_skills_score": 80.95,
+      "experience_depth_score": 100.0,
+      "semantic_alignment_score": 60.77,
+      "matched_skills": [
+        "aws",
+        "docker",
+        "fastapi",
+        "kubernetes",
+        "mlops",
+        "python",
+        "pytorch",
+        "sql",
+        "transformers"
+      ],
+      "missing_skills": [],
+      "summary": "Alice Chen demonstrates solid experience depth (100/100) relative to the SeniorityLevel.SENIOR target level. All required skills are covered, making them a strong fit for Acme AI Labs's Senior ML Engineer opening."
+    },
+    {
+      "rank": 3,
+      "candidate_name": "Eva Johnson",
+      "email": "eva.johnson@dev.io",
+      "fit_score": 66.75,
+      "technical_skills_score": 52.38,
+      "experience_depth_score": 100.0,
+      "semantic_alignment_score": 62.26,
+      "matched_skills": [
+        "aws",
+        "docker",
+        "fastapi",
+        "kubernetes",
+        "python",
+        "sql"
+      ],
+      "missing_skills": [
+        "mlops",
+        "pytorch",
+        "transformers"
+      ],
+      "summary": "Eva Johnson demonstrates solid experience depth (100/100) relative to the SeniorityLevel.SENIOR target level. Key gaps to address: mlops, pytorch, transformers."
+    },
+    {
+      "rank": 4,
+      "candidate_name": "Bob Martinez",
+      "email": "bob.martinez@email.com",
+      "fit_score": 58.35,
+      "technical_skills_score": 38.1,
+      "experience_depth_score": 100.0,
+      "semantic_alignment_score": 57.2,
+      "matched_skills": [
+        "aws",
+        "docker",
+        "kubernetes",
+        "python"
+      ],
+      "missing_skills": [
+        "sql",
+        "mlops",
+        "pytorch",
+        "transformers"
+      ],
+      "summary": "Bob Martinez demonstrates solid experience depth (100/100) relative to the SeniorityLevel.SENIOR target level. Key gaps to address: sql, mlops, pytorch."
+    },
+    {
+      "rank": 5,
+      "candidate_name": "Carol Nguyen",
+      "email": "carol.nguyen@gmail.com",
+      "fit_score": 35.64,
+      "technical_skills_score": 28.57,
+      "experience_depth_score": 37.33,
+      "semantic_alignment_score": 48.09,
+      "matched_skills": [
+        "aws",
+        "python",
+        "sql"
+      ],
+      "missing_skills": [
+        "pytorch",
+        "transformers",
+        "docker",
+        "mlops",
+        "kubernetes"
+      ],
+      "summary": "Carol Nguyen has high contextual alignment (48/100) with the Senior ML Engineer role description. Key gaps to address: pytorch, transformers, docker."
+    }
+  ],
+  "processing_time_seconds": 0.203
+}

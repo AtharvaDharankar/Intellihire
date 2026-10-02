@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeIQ - AI Ranking System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-mesh"></div>
+    
+    <header class="navbar">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <h1>ResumeIQ</h1>
+        </div>
+        <p class="tagline">Intelligent Candidate Ranking</p>
+    </header>
+
+    <main class="container">
+        <!-- Configuration Panel -->
+        <section class="glass-panel config-panel">
+            <h2>Job Configuration</h2>
+            <form id="job-form">
+                <div class="form-group">
+                    <label for="title">Job Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Senior Frontend Engineer" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" name="company" placeholder="e.g. Acme Corp" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Job Description</label>
+                    <textarea id="description" name="description" rows="3" placeholder="Brief overview of the role..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="required_skills">Required Skills <span class="sub-label">(comma-separated)</span></label>
+                        <input type="text" id="required_skills" name="required_skills" placeholder="React, TypeScript, CSS">
+                    </div>
+                    <div class="form-group">
+                        <label for="preferred_skills">Preferred Skills</label>
+                        <input type="text" id="preferred_skills" name="preferred_skills" placeholder="Node.js, GraphQL">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="min_years_experience">Min. Years Exp.</label>
+                        <input type="number" id="min_years_experience" name="min_years_experience" value="3" min="0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="seniority_target">Target Seniority</label>
+                        <select id="seniority_target" name="seniority_target">
+                            <option value="Intern">Intern</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Mid-Level">Mid-Level</option>
+                            <option value="Senior" selected>Senior</option>
+                            <option value="Lead">Lead</option>
+                            <option value="Principal">Principal</option>
+                            <option value="Director">Director</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="file-upload-zone" id="drop-zone">
+                    <div class="upload-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </div>
+                    <p class="upload-text">Drag & drop up to 100 resumes here</p>
+                    <p class="upload-subtext">Supports .pdf, .docx, .txt</p>
+                    <input type="file" id="file-input" name="files" multiple accept=".pdf,.docx,.txt" style="display: none;">
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                    <div id="file-count" class="file-count hidden">0 files selected</div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span class="btn-text">Analyze & Rank Candidates</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </form>
+        </section>
+
+        <!-- Results Panel -->
+        <section class="glass-panel results-panel hidden" id="results-panel">
+            <div class="results-header">
+                <h2>Ranking Results</h2>
+                <div class="results-meta" id="results-meta"></div>
+            </div>
+            
+            <div class="candidate-list" id="candidate-list">
+                <!-- Candidates injected via JS -->
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

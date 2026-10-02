@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="AI-powered resume ranker — upload resumes and match them against job descriptions instantly.">
+    <title>Resume Ranker — AI-Powered Matching</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Ambient background blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h1 id="app-title">Resume Ranker</h1>
+                    <p class="app-subtitle">AI-powered resume matching</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Upload Card -->
+            <section class="card upload-card" id="upload-section">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h2>Upload &amp; Analyze</h2>
+                </div>
+
+                <form action="/" method="post" enctype="multipart/form-data" id="upload-form">
+                    <div class="form-group">
+                        <label for="job_description">Job Description</label>
+                        <textarea name="job_description" id="job_description" rows="5"
+                            placeholder="Paste the job description here — include required skills, experience level, and key responsibilities..."
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resume_files">Resumes</label>
+                        <div class="file-drop-zone" id="file-drop-zone">
+                            <input type="file" name="resume_files" id="resume_files" accept=".pdf" multiple required>
+                            <div class="drop-zone-content">
+                                <div class="drop-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                        </path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                </div>
+                                <p class="drop-text">Drop PDF files here or <span class="browse-link">browse</span></p>
+                                <p class="drop-hint" id="file-count-hint">Supports multiple files</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="analyze-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Analyze Resumes
+                    </button>
+                </form>
+            </section>
+
+            <!-- Results Section -->
+            {% if results %}
+            <section class="card results-card" id="results-section">
+                <div class="card-header">
+                    <div class="card-icon results-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </div>
+                    <h2>Ranked Results</h2>
+                    <span class="badge">{{ results|length }} resume{{ 's' if results|length != 1 }}</span>
+                </div>
+
+                <div class="results-table-wrapper">
+                    <table id="results-table">
+                        <thead>
+                            <tr>
+                                <th class="col-rank">#</th>
+                                <th class="col-name">Candidate</th>
+                                <th class="col-email">Email</th>
+                                <th class="col-score">Match Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr class="result-row" style="animation-delay: {{ loop.index0 * 0.06 }}s">
+                                <td class="col-rank">
+                                    <span
+                                        class="rank-badge {% if loop.index == 1 %}rank-gold{% elif loop.index == 2 %}rank-silver{% elif loop.index == 3 %}rank-bronze{% endif %}">
+                                        {{ loop.index }}
+                                    </span>
+                                </td>
+                                <td class="col-name">
+                                    <div class="candidate-info">
+                                        <div class="avatar">{{ result[0][0][0] if result[0] else '?' }}</div>
+                                        <span>{{ result[0][0] if result[0] else 'N/A' }}</span>
+                                    </div>
+                                </td>
+                                <td class="col-email">
+                                    <span class="email-text">{{ result[1][0] if result[1] else 'N/A' }}</span>
+                                </td>
+                                <td class="col-score">
+                                    <div class="score-cell">
+                                        <div class="score-bar-track">
+                                            <div class="score-bar-fill" style="width: {{ result[2] }}%"></div>
+                                        </div>
+                                        <span class="score-value">{{ "%.1f"|format(result[2]) }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="results-actions">
+                    <a href="{{ url_for('download_csv') }}" download="ranked_resumes.csv" class="btn-secondary"
+                        id="download-csv-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export CSV
+                    </a>
+                </div>
+            </section>
+            {% endif %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Built with TF-IDF &amp; spaCy NLP</p>
+        </footer>
+    </div>
+
+    <script>
+        // File drop zone interaction
+        const dropZone = document.getElementById('file-drop-zone');
+        const fileInput = document.getElementById('resume_files');
+        const fileHint = document.getElementById('file-count-hint');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            fileInput.files = e.dataTransfer.files;
+            updateFileHint();
+        });
+
+        fileInput.addEventListener('change', updateFileHint);
+
+        function updateFileHint() {
+            const count = fileInput.files.length;
+            if (count > 0) {
+                fileHint.textContent = `${count} file${count !== 1 ? 's' : ''} selected`;
+                dropZone.classList.add('has-files');
+            } else {
+                fileHint.textContent = 'Supports multiple files';
+                dropZone.classList.remove('has-files');
+            }
+        }
+
+        // Textarea auto-resize
+        const textarea = document.getElementById('job_description');
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 300) + 'px';
+        });
+    </script>
+</body>
+
+</html>
